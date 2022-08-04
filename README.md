@@ -1,6 +1,6 @@
 # Privacy Friendly Habit Tracker
 
-A simple habit tracker tool with no gamification and no notification features. Just record your small win every day.
+A simple habit tracker tool with no gamification, no ads, and no notification features. Just record your small win every day.
 
 ## Features
 - [ ] Add habit
