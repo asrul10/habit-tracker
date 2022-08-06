@@ -12,6 +12,11 @@
       complete: false,
     },
   ];
+  const existingData = localStorage.getItem("habits");
+  if (existingData) {
+    habits = JSON.parse(existingData);
+  }
+
   const addHabit = () => {
     habits.push({
       id: new Date().getTime(),
@@ -20,6 +25,24 @@
     });
     habits = habits;
     newHabit = "";
+    localStorage.setItem("habits", JSON.stringify(habits));
+  };
+
+  const removeHabit = (event) => {
+    const { currentTarget } = event;
+    const { id } = currentTarget.dataset;
+    console.log(id);
+    for (let index = 0; index < habits.length; index++) {
+      const habit = habits[index];
+      if (habit.id !== parseInt(id)) {
+        continue;
+      }
+      console.log("Found", index, habit);
+      habits.splice(index, 1);
+      break;
+    }
+    habits = habits;
+    localStorage.setItem("habits", JSON.stringify(habits));
   };
 </script>
 
@@ -27,16 +50,22 @@
   <h1 class="text-4xl font-bold mb-8">The Habit Tracker</h1>
 
   {#each habits as habit}
-    <div class="mb-2">
-      <label for="habit-{habit.id}" class="cursor-pointer flex items-center">
-        <input
-          class="w-4 h-4 rounded cursor-pointer mr-2"
-          type="checkbox"
-          name="habit-{habit.id}"
-          id="habit-{habit.id}"
-        />
+    <div class="mb-2 flex items-center gap-x-2">
+      <input
+        class="w-4 h-4 rounded cursor-pointer mr-2"
+        type="checkbox"
+        name="habit-{habit.id}"
+        id="habit-{habit.id}"
+      />
+      <label for="habit-{habit.id}" class="cursor-pointer ">
         {habit.name}
       </label>
+      <button
+        on:click={removeHabit}
+        data-id={habit.id}
+        class="bg-red-500 rounded-full text-sm px-2 opacity-25 hover:opacity-95"
+        >remove</button
+      >
     </div>
   {/each}
 
