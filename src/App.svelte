@@ -82,9 +82,10 @@
       <button
         on:click={removeHabit}
         data-id={habit.id}
-        class="bg-red-500 rounded-full text-sm px-2 opacity-25 hover:opacity-95"
-        >remove</button
+        class="bg-red-500 rounded-full text-sm px-2 font-bold opacity-80 h-4 flex items-center"
       >
+        <span class="offsetTop"> &#8211; </span>
+      </button>
     </div>
   {/each}
 
@@ -103,3 +104,9 @@
     >
   </div>
 </main>
+
+<style>
+  .offsetTop {
+    margin-top: -5px;
+  }
+</style>
