@@ -31,14 +31,30 @@
   const removeHabit = (event) => {
     const { currentTarget } = event;
     const { id } = currentTarget.dataset;
-    console.log(id);
     for (let index = 0; index < habits.length; index++) {
       const habit = habits[index];
       if (habit.id !== parseInt(id)) {
         continue;
       }
-      console.log("Found", index, habit);
       habits.splice(index, 1);
+      break;
+    }
+    habits = habits;
+    localStorage.setItem("habits", JSON.stringify(habits));
+  };
+
+  const completeHabit = (event) => {
+    const { currentTarget } = event;
+    const { id } = currentTarget.dataset;
+    for (let index = 0; index < habits.length; index++) {
+      const habit = habits[index];
+      if (habit.id !== parseInt(id)) {
+        continue;
+      }
+      habits[index].complete = false;
+      if (currentTarget.checked) {
+        habits[index].complete = true;
+      }
       break;
     }
     habits = habits;
@@ -56,6 +72,9 @@
         type="checkbox"
         name="habit-{habit.id}"
         id="habit-{habit.id}"
+        checked={habit.complete}
+        data-id={habit.id}
+        on:click={completeHabit}
       />
       <label for="habit-{habit.id}" class="cursor-pointer ">
         {habit.name}
