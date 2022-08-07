@@ -13,8 +13,30 @@
     },
   ];
   const existingData = localStorage.getItem("habits");
+  const date = new Date();
+  const dateNow = [
+    date.getFullYear(),
+    (date.getMonth() + 1).toString().padStart(2, "0"),
+    date.getDate().toString().padStart(2, "0"),
+  ].join("-");
+  const lastUpdate =
+    localStorage.getItem("lastUpdate") ||
+    localStorage.setItem("lastUpdate", dateNow);
   if (existingData) {
     habits = JSON.parse(existingData);
+  }
+
+  const saveHabits = (newHabits) => {
+    habits = newHabits;
+    localStorage.setItem("habits", JSON.stringify(habits));
+    localStorage.setItem("lastUpdate", dateNow);
+  };
+
+  if (lastUpdate !== dateNow) {
+    for (let index = 0; index < habits.length; index++) {
+      habits[index].complete = false;
+    }
+    saveHabits(habits);
   }
 
   const addHabit = () => {
@@ -23,9 +45,8 @@
       name: newHabit,
       complete: false,
     });
-    habits = habits;
     newHabit = "";
-    localStorage.setItem("habits", JSON.stringify(habits));
+    saveHabits(habits);
   };
 
   const removeHabit = (event) => {
@@ -39,8 +60,7 @@
       habits.splice(index, 1);
       break;
     }
-    habits = habits;
-    localStorage.setItem("habits", JSON.stringify(habits));
+    saveHabits(habits);
   };
 
   const completeHabit = (event) => {
@@ -57,8 +77,7 @@
       }
       break;
     }
-    habits = habits;
-    localStorage.setItem("habits", JSON.stringify(habits));
+    saveHabits(habits);
   };
 </script>
 
