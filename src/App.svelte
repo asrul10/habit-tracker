@@ -122,6 +122,22 @@
       on:click={addHabit}>Add</button
     >
   </div>
+
+  <div class="mt-8">
+    <h1 class="text-2xl font-bold mb-5">{date.getFullYear()}</h1>
+    <div class="flex mb-5">
+      {#each new Array(12) as month, index}
+        <div class="text-center mr-3 relative cursor-pointer">
+          <div class="w-7 h-32 bg-amber-500" />
+          <div class="font-bold bg-amber-700 font-mono">{index + 1}</div>
+        </div>
+      {/each}
+    </div>
+    <div class="bg-black py-2 px-4 w-60 rounded text-left bg-opacity-80">
+      Wakeup early at 6 A.M<br />
+      Workout
+    </div>
+  </div>
 </main>
 
 <style>
