@@ -25,6 +25,22 @@
   if (existingData) {
     habits = JSON.parse(existingData);
   }
+  let selectedMonth = date.getMonth() + 1;
+  let dayOfTheMonth = new Date(date.getFullYear(), selectedMonth, 0).getDate();
+
+  const setRandomStats = (days) => {
+    const stats = [];
+    for (let index = 0; index < days.length; index++) {
+      stats.push(Math.floor(Math.random() * 100));
+    }
+    return stats;
+  };
+  let habitStats = setRandomStats(Array(dayOfTheMonth));
+
+  const changeMonth = () => {
+    dayOfTheMonth = new Date(date.getFullYear(), selectedMonth, 0).getDate();
+    habitStats = setRandomStats(Array(dayOfTheMonth));
+  };
 
   const saveHabits = (newHabits) => {
     habits = newHabits;
@@ -108,9 +124,9 @@
     </div>
   {/each}
 
-  <div class="mt-5">
+  <div class="mt-5 flex">
     <input
-      class="p-2 rounded-tl rounded-bl w-77 outline-none text-black"
+      class="p-2 rounded-tl rounded-bl w-full md:w-64 outline-none text-black"
       type="text"
       name="addHabit"
       id="addHabit"
@@ -124,16 +140,37 @@
   </div>
 
   <div class="mt-8">
-    <h1 class="text-2xl font-bold mb-5">{date.getFullYear()}</h1>
-    <div class="flex mb-5">
-      {#each new Array(12) as month, index}
-        <div class="text-center mr-3 relative cursor-pointer">
-          <div class="w-7 h-32 bg-amber-500" />
-          <div class="font-bold bg-amber-700 font-mono">{index + 1}</div>
-        </div>
+    <select
+      name="year"
+      class="mb-5 font-bold text-2xl pr-2 rounded bg-transparent focus:outline-none"
+      id="report-year"
+      bind:value={selectedMonth}
+      on:change={changeMonth}
+    >
+      {#each Array(12) as _, month}
+        <option class="text-black" value={month + 1}
+          >{new Date(date.getFullYear(), month + 1, 0).toLocaleString("en", {
+            month: "long",
+          })}</option
+        >
       {/each}
+    </select>
+    <div class="overflow-x-auto mb-5">
+      <div class="flex items-end mb-3" style="height: 120px;">
+        {#each habitStats as stat, index}
+          <button
+            type="button"
+            class="text-center mr-3 relative cursor-pointer hover:opacity-80"
+          >
+            <div class="w-10 bg-amber-500" style="height: {stat}px;" />
+            <div class="font-bold bg-amber-700 font-mono">{index + 1}</div>
+          </button>
+        {/each}
+      </div>
     </div>
-    <div class="bg-black py-2 px-4 w-60 rounded text-left bg-opacity-80">
+    <div
+      class="bg-black w-full md:w-80 py-2 px-4 rounded text-left bg-opacity-80"
+    >
       Wakeup early at 6 A.M<br />
       Workout
     </div>
