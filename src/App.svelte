@@ -55,7 +55,8 @@
     saveHabits(habits);
   }
 
-  const addHabit = () => {
+  const addHabit = (e) => {
+    e.preventDefault();
     habits.push({
       id: new Date().getTime(),
       name: newHabit,
@@ -65,15 +66,24 @@
     saveHabits(habits);
   };
 
-  const removeHabit = (event) => {
+  const getHeight = (event) => {
     const { currentTarget } = event;
+    const { id } = currentTarget.dataset;
+  };
+
+  const editHabit = (event) => {
+    const { currentTarget } = event;
+    const { value } = currentTarget;
     const { id } = currentTarget.dataset;
     for (let index = 0; index < habits.length; index++) {
       const habit = habits[index];
       if (habit.id !== parseInt(id)) {
         continue;
       }
-      habits.splice(index, 1);
+      habits[index].name = value;
+      if (value === "") {
+        habits.splice(index, 1);
+      }
       break;
     }
     saveHabits(habits);
@@ -101,9 +111,9 @@
   <h1 class="text-4xl font-bold mb-8">The Habit Tracker</h1>
 
   {#each habits as habit}
-    <div class="mb-2 flex items-center gap-x-2">
+    <div class="mb-2 flex items-start gap-x-2">
       <input
-        class="w-4 h-4 rounded cursor-pointer mr-2"
+        class="w-5 h-5 rounded cursor-pointer mr-1 mt-1"
         type="checkbox"
         name="habit-{habit.id}"
         id="habit-{habit.id}"
@@ -111,33 +121,26 @@
         data-id={habit.id}
         on:click={completeHabit}
       />
-      <label for="habit-{habit.id}" class="cursor-pointer ">
-        {habit.name}
-      </label>
-      <button
-        on:click={removeHabit}
+      <textarea
         data-id={habit.id}
-        class="bg-red-500 rounded-full text-sm px-2 font-bold opacity-80 h-4 flex items-center"
-      >
-        <span class="offsetTop"> &#8211; </span>
-      </button>
+        on:change={editHabit}
+        on:keypress={getHeight}
+        class="cursor-text text-lg h-7 overflow-hidden bg-transparent resize-none focus:outline-none w-full"
+        value={habit.name}
+      />
     </div>
   {/each}
 
-  <div class="mt-5 flex">
+  <form on:submit={addHabit}>
     <input
-      class="p-2 rounded-tl rounded-bl w-full md:w-64 outline-none text-black"
+      class="py-2 rounded-tl rounded-bl w-full text-lg outline-none bg-transparent"
       type="text"
       name="addHabit"
       id="addHabit"
       placeholder="Add a habit"
       bind:value={newHabit}
     />
-    <button
-      class="bg-amber-500 py-2 px-3 rounded-tr rounded-br"
-      on:click={addHabit}>Add</button
-    >
-  </div>
+  </form>
 
   <div class="mt-8">
     <select
@@ -176,9 +179,3 @@
     </div>
   </div>
 </main>
-
-<style>
-  .offsetTop {
-    margin-top: -5px;
-  }
-</style>
