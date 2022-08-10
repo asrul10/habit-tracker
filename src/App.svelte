@@ -1,5 +1,4 @@
 <script>
-  let newHabit = "";
   let habits = [
     {
       id: 1,
@@ -55,34 +54,33 @@
     saveHabits(habits);
   }
 
-  const addHabit = (e) => {
-    e.preventDefault();
-    habits.push({
-      id: new Date().getTime(),
-      name: newHabit,
-      complete: false,
-    });
-    newHabit = "";
-    saveHabits(habits);
-  };
-
-  const getHeight = (event) => {
+  const addHabit = (event) => {
     const { currentTarget } = event;
-    const { id } = currentTarget.dataset;
+    const { innerText } = currentTarget;
+    if (event.key === "Enter") {
+      habits.push({
+        id: new Date().getTime(),
+        name: `${innerText}`.replace(/\n/g, ""),
+        complete: false,
+      });
+      event.currentTarget.innerText = "";
+      saveHabits(habits);
+    }
   };
 
   const editHabit = (event) => {
     const { currentTarget } = event;
-    const { value } = currentTarget;
+    const { innerText } = currentTarget;
     const { id } = currentTarget.dataset;
     for (let index = 0; index < habits.length; index++) {
       const habit = habits[index];
       if (habit.id !== parseInt(id)) {
         continue;
       }
-      habits[index].name = value;
-      if (value === "") {
-        habits.splice(index, 1);
+      habits[index].name = innerText.replace(/\n\r/gm, "");
+      if (innerText === "") {
+        // currentTarget.blur();
+        // habits.splice(index, 1);
       }
       break;
     }
@@ -105,6 +103,14 @@
     }
     saveHabits(habits);
   };
+
+  const preventEnter = (event) => {
+    const { key } = event;
+    if (key === "Enter") {
+      event.preventDefault();
+      return false;
+    }
+  };
 </script>
 
 <main class="text-white container mx-auto p-8">
@@ -121,26 +127,26 @@
         data-id={habit.id}
         on:click={completeHabit}
       />
-      <textarea
+      <span
         data-id={habit.id}
-        on:change={editHabit}
-        on:keypress={getHeight}
-        class="cursor-text text-lg h-7 overflow-hidden bg-transparent resize-none focus:outline-none w-full"
-        value={habit.name}
-      />
+        on:keypress={preventEnter}
+        on:keyup={editHabit}
+        class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none focus:outline-none"
+        role="textbox"
+        contenteditable>{habit.name}</span
+      >
     </div>
   {/each}
 
-  <form on:submit={addHabit}>
-    <input
-      class="py-2 rounded-tl rounded-bl w-full text-lg outline-none bg-transparent"
-      type="text"
-      name="addHabit"
-      id="addHabit"
-      placeholder="Add a habit"
-      bind:value={newHabit}
+  <div>
+    <span
+      on:keyup={addHabit}
+      on:keypress={preventEnter}
+      class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none outline-none placeholder-habit cursor-text"
+      role="textbox"
+      contenteditable
     />
-  </form>
+  </div>
 
   <div class="mt-8">
     <select
@@ -179,3 +185,10 @@
     </div>
   </div>
 </main>
+
+<style>
+  .placeholder-habit[contenteditable]:empty::before {
+    content: "Add a habit";
+    color: #9ca3af;
+  }
+</style>
