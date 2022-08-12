@@ -1,4 +1,6 @@
 <script>
+  import { afterUpdate } from "svelte";
+
   let habits = [
     {
       id: 1,
@@ -78,14 +80,31 @@
         continue;
       }
       habits[index].name = innerText.replace(/\n\r/gm, "");
-      if (innerText === "") {
-        // currentTarget.blur();
-        // habits.splice(index, 1);
-      }
       break;
     }
     saveHabits(habits);
   };
+
+  const deleteOnBlur = (event) => {
+    const { currentTarget } = event;
+    const { innerText } = currentTarget;
+    const { id } = currentTarget.dataset;
+    if (innerText === "") {
+      saveHabits(habits.filter((val) => val.id !== parseInt(id)));
+    }
+  };
+
+  afterUpdate(() => {
+    if (habits) {
+      for (let index = 0; index < habits.length; index++) {
+        const habit = habits[index];
+        const element = document.getElementById(`habit-label-${habit.id}`);
+        if (habit.name !== element.innerText) {
+          element.innerText = habit.name;
+        }
+      }
+    }
+  });
 
   const completeHabit = (event) => {
     const { currentTarget } = event;
@@ -128,9 +147,11 @@
         on:click={completeHabit}
       />
       <span
+        id="habit-label-{habit.id}"
         data-id={habit.id}
         on:keypress={preventEnter}
         on:keyup={editHabit}
+        on:blur={deleteOnBlur}
         class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none focus:outline-none"
         role="textbox"
         contenteditable>{habit.name}</span
