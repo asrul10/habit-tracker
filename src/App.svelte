@@ -1,5 +1,5 @@
 <script>
-  import { afterUpdate } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
 
   let habits = [
     {
@@ -38,7 +38,11 @@
   };
   let habitStats = setRandomStats(Array(dayOfTheMonth));
 
-  const changeMonth = () => {
+  const changeMonth = (event) => {
+    const { currentTarget } = event;
+    const { month } = currentTarget.dataset;
+
+    selectedMonth = month + 1;
     dayOfTheMonth = new Date(date.getFullYear(), selectedMonth, 0).getDate();
     habitStats = setRandomStats(Array(dayOfTheMonth));
   };
@@ -127,10 +131,16 @@
       return false;
     }
   };
+
+  onMount(() => {
+    document.getElementById("months").scrollTo(143 * 6, 0);
+  });
 </script>
 
-<main class="text-white container mx-auto p-8">
-  <h1 class="text-4xl font-bold mb-8">The Habit Tracker</h1>
+<main class="text-white sm:w-96 mx-auto py-10">
+  <div class="text-center">
+    <h1 class="text-4xl font-bold mb-8">Habits Tracker</h1>
+  </div>
 
   {#each habits as habit}
     <div class="mb-2 flex items-start gap-x-2">
@@ -173,21 +183,23 @@
   </div>
 
   <div class="mt-8">
-    <select
-      name="year"
-      class="mb-5 font-bold text-1xl pr-2 rounded bg-transparent focus:outline-none"
-      id="report-year"
-      bind:value={selectedMonth}
-      on:change={changeMonth}
-    >
+    <div class="w-full py-3 overflow-x-auto overflow-y-hidden mb-4" id="months">
       {#each Array(12) as _, month}
-        <option class="text-black" value={month + 1}
-          >{new Date(date.getFullYear(), month + 1, 0).toLocaleString("en", {
-            month: "long",
-          })}</option
+        <span
+          data-month={month}
+          on:click={changeMonth}
+          class="py-1 px-4 rounded-full mr-2 cursor-pointer whitespace-nowrap {selectedMonth -
+            1 ===
+          month
+            ? `bg-amber-500`
+            : `bg-gray-500`}"
         >
+          {new Date(date.getFullYear(), month + 1, 0).toLocaleString("en", {
+            month: "long",
+          })} 2022
+        </span>
       {/each}
-    </select>
+    </div>
     <div class="overflow-x-auto mb-5">
       <div class="flex items-end mb-3" style="height: 120px;">
         {#each habitStats as stat, index}
@@ -201,9 +213,7 @@
         {/each}
       </div>
     </div>
-    <div
-      class="bg-black w-full md:w-80 py-2 px-4 rounded text-left bg-opacity-80"
-    >
+    <div class="bg-black w-full py-2 px-4 rounded text-left bg-opacity-50">
       Wakeup early at 6 A.M<br />
       Workout
     </div>
