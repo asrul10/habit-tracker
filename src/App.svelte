@@ -1,31 +1,23 @@
 <script>
   import { afterUpdate, onMount } from "svelte";
 
-  let habits = [
+  let habits = JSON.parse(localStorage.getItem("habits")) || [
     {
       id: 1,
       name: "Wakeup early at 6 A.M",
-      complete: false,
     },
     {
       id: 2,
       name: "Workout",
-      complete: false,
     },
   ];
-  const existingData = localStorage.getItem("habits");
+  let habitHistories = JSON.parse(localStorage.getItem("habitHistories")) || [];
   const date = new Date();
   const dateNow = [
     date.getFullYear(),
     (date.getMonth() + 1).toString().padStart(2, "0"),
     date.getDate().toString().padStart(2, "0"),
   ].join("-");
-  const lastUpdate =
-    localStorage.getItem("lastUpdate") ||
-    localStorage.setItem("lastUpdate", dateNow);
-  if (existingData) {
-    habits = JSON.parse(existingData);
-  }
   let selectedMonth = date.getMonth() + 1;
   let dayOfTheMonth = new Date(date.getFullYear(), selectedMonth, 0).getDate();
 
@@ -42,7 +34,7 @@
     const { currentTarget } = event;
     const { month } = currentTarget.dataset;
 
-    selectedMonth = month + 1;
+    selectedMonth = parseInt(month) + 1;
     dayOfTheMonth = new Date(date.getFullYear(), selectedMonth, 0).getDate();
     habitStats = setRandomStats(Array(dayOfTheMonth));
   };
@@ -50,15 +42,24 @@
   const saveHabits = (newHabits) => {
     habits = newHabits;
     localStorage.setItem("habits", JSON.stringify(habits));
-    localStorage.setItem("lastUpdate", dateNow);
   };
 
-  if (lastUpdate !== dateNow) {
-    for (let index = 0; index < habits.length; index++) {
-      habits[index].complete = false;
+  const saveCompletedHabits = (habit) => {
+    let uncompleteIndex = null;
+    for (let index = 0; index < habitHistories.length; index++) {
+      const history = habitHistories[index];
+      if (history.id === habit.id && history.completedAt === dateNow) {
+        uncompleteIndex = index;
+      }
     }
-    saveHabits(habits);
-  }
+    if (uncompleteIndex) {
+      habitHistories.splice(uncompleteIndex, 1);
+    } else {
+      habitHistories.push({ ...habit, completedAt: dateNow });
+    }
+    habitHistories = habitHistories;
+    localStorage.setItem("habitHistories", JSON.stringify(habitHistories));
+  };
 
   const addHabit = (event) => {
     const { currentTarget } = event;
@@ -67,7 +68,6 @@
       habits.push({
         id: new Date().getTime(),
         name: `${innerText}`.replace(/\n/g, ""),
-        complete: false,
       });
       event.currentTarget.innerText = "";
       saveHabits(habits);
@@ -113,15 +113,8 @@
   const completeHabit = (event) => {
     const { currentTarget } = event;
     const { target } = currentTarget.dataset;
-    for (let index = 0; index < habits.length; index++) {
-      const habit = habits[index];
-      if (habit.id !== parseInt(target)) {
-        continue;
-      }
-      habits[index].complete = !habits[index].complete;
-      break;
-    }
-    saveHabits(habits);
+    const habit = habits.find((val) => val.id === parseInt(target));
+    saveCompletedHabits(habit);
   };
 
   const preventEnter = (event) => {
@@ -133,7 +126,7 @@
   };
 
   onMount(() => {
-    document.getElementById("months").scrollTo(143 * 6, 0);
+    document.getElementById(`month-${selectedMonth - 1}`).scrollIntoView();
   });
 </script>
 
@@ -145,7 +138,9 @@
   {#each habits as habit}
     <div class="mb-2 flex items-start gap-x-2">
       <span
-        class="w-5 h-5 rounded mt-1 p-1 mr-1 cursor-pointer {habit.complete
+        class="w-5 h-5 rounded mt-1 p-1 mr-1 cursor-pointer {habitHistories.find(
+          (val) => val.id === habit.id && val.completedAt === dateNow
+        )
           ? `bg-blue-500`
           : `bg-white`}"
         data-target={habit.id}
@@ -186,9 +181,10 @@
     <div class="w-full py-3 overflow-x-auto overflow-y-hidden mb-4" id="months">
       {#each Array(12) as _, month}
         <span
+          id="month-{month}"
           data-month={month}
           on:click={changeMonth}
-          class="py-1 px-4 rounded-full mr-2 cursor-pointer whitespace-nowrap {selectedMonth -
+          class="py-1 px-4 rounded-full mr-2 cursor-pointer whitespace-nowrap hover:bg-amber-500 month-pills {selectedMonth -
             1 ===
           month
             ? `bg-amber-500`
