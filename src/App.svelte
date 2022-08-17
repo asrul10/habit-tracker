@@ -12,31 +12,74 @@
     },
   ];
   let habitHistories = JSON.parse(localStorage.getItem("habitHistories")) || [];
-  const date = new Date();
-  const dateNow = [
-    date.getFullYear(),
-    (date.getMonth() + 1).toString().padStart(2, "0"),
-    date.getDate().toString().padStart(2, "0"),
-  ].join("-");
-  let selectedMonth = date.getMonth() + 1;
-  let dayOfTheMonth = new Date(date.getFullYear(), selectedMonth, 0).getDate();
+  let habitHistoryByMonth = [];
+  let habitStats = [];
+  let selectedMonth = "";
 
-  const setRandomStats = (days) => {
+  const formatDate = (date, yearMonth = false) => {
+    let formatted = [
+      date.getFullYear(),
+      (date.getMonth() + 1).toString().padStart(2, "0"),
+    ];
+    if (!yearMonth) {
+      formatted.push(date.getDate().toString().padStart(2, "0"));
+    }
+    return formatted.join("-");
+  };
+
+  const getStats = (date) => {
+    const days = Array(
+      new Date(date.getFullYear(), date.getMonth(), 0).getDate()
+    );
     const stats = [];
-    for (let index = 0; index < days.length; index++) {
-      stats.push(Math.floor(Math.random() * 100));
+    for (let day = 1; day <= days.length; day++) {
+      const filtered = habitHistories.filter((val) => {
+        date.setDate(day);
+        return val.completedAt === formatDate(date);
+      });
+      stats.push({
+        id: formatDate(date),
+        total: filtered.length,
+        habits: filtered,
+      });
     }
     return stats;
   };
-  let habitStats = setRandomStats(Array(dayOfTheMonth));
+
+  const historyByMonth = () => {
+    let listByMonth = [];
+    for (let index = 0; index < habitHistories.length; index++) {
+      const habit = habitHistories[index];
+      const yearAndMonth = habit.completedAt.replace(/-\d{2}$/, "");
+      if (listByMonth.find((val) => val === yearAndMonth)) {
+        continue;
+      }
+      listByMonth.push(yearAndMonth);
+    }
+    return listByMonth;
+  };
+
+  const dateNow = formatDate(new Date());
+  habitHistoryByMonth = historyByMonth();
+  habitStats = getStats(new Date());
+  selectedMonth = formatDate(new Date(), true);
 
   const changeMonth = (event) => {
     const { currentTarget } = event;
-    const { month } = currentTarget.dataset;
+    const { yearMonth } = currentTarget.dataset;
+    const date = new Date(`${yearMonth}-01`);
 
-    selectedMonth = parseInt(month) + 1;
-    dayOfTheMonth = new Date(date.getFullYear(), selectedMonth, 0).getDate();
-    habitStats = setRandomStats(Array(dayOfTheMonth));
+    selectedMonth = yearMonth;
+    habitStats = getStats(date);
+  };
+
+  const labelPills = (habitHistoryByMonth) => {
+    const date = new Date(`${habitHistoryByMonth}-01`);
+    const year = date.getFullYear();
+    const month = date.toLocaleString("en", {
+      month: "long",
+    });
+    return `${month} ${year}`;
   };
 
   const saveHabits = (newHabits) => {
@@ -126,7 +169,8 @@
   };
 
   onMount(() => {
-    document.getElementById(`month-${selectedMonth - 1}`).scrollIntoView();
+    document.getElementById(`month-${selectedMonth}`).scrollIntoView();
+    document.getElementById(`stat-${dateNow}`).scrollIntoView();
   });
 </script>
 
@@ -179,20 +223,17 @@
 
   <div class="mt-8">
     <div class="w-full py-3 overflow-x-auto overflow-y-hidden mb-4" id="months">
-      {#each Array(12) as _, month}
+      {#each habitHistoryByMonth as yearMonth}
         <span
-          id="month-{month}"
-          data-month={month}
+          id="month-{yearMonth}"
+          data-yearMonth={yearMonth}
           on:click={changeMonth}
-          class="py-1 px-4 rounded-full mr-2 cursor-pointer whitespace-nowrap hover:bg-amber-500 month-pills {selectedMonth -
-            1 ===
-          month
+          class="py-1 px-4 rounded-full mr-2 cursor-pointer whitespace-nowrap hover:bg-amber-500 month-pills {selectedMonth ===
+          yearMonth
             ? `bg-amber-500`
             : `bg-gray-500`}"
         >
-          {new Date(date.getFullYear(), month + 1, 0).toLocaleString("en", {
-            month: "long",
-          })} 2022
+          {labelPills(yearMonth)}
         </span>
       {/each}
     </div>
@@ -200,10 +241,14 @@
       <div class="flex items-end mb-3" style="height: 120px;">
         {#each habitStats as stat, index}
           <button
+            id="stat-{stat.id}"
             type="button"
             class="text-center mr-3 relative cursor-pointer hover:opacity-80"
           >
-            <div class="w-10 bg-amber-500" style="height: {stat}px;" />
+            <div
+              class="w-10 bg-amber-500"
+              style="height: {stat.total * 10}px;"
+            />
             <div class="font-bold bg-amber-700 font-mono">{index + 1}</div>
           </button>
         {/each}
