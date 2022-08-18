@@ -32,13 +32,25 @@
       new Date(date.getFullYear(), date.getMonth(), 0).getDate()
     );
     const stats = [];
+    let hasData = false;
     for (let day = 1; day <= days.length; day++) {
-      const filtered = habitHistories.filter((val) => {
-        date.setDate(day);
-        return val.completedAt === formatDate(date);
-      });
+      date.setDate(day);
+      const reportDate = formatDate(date);
+      const filtered = habitHistories.filter(
+        (val) => val.completedAt === reportDate
+      );
+
+      if (date.getTime() > new Date().getTime()) {
+        continue;
+      }
+      if (!hasData && !filtered.length) {
+        continue;
+      }
+      hasData = true;
+
       stats.push({
         id: formatDate(date),
+        date: date.getDate(),
         total: filtered.length,
         habits: filtered,
       });
@@ -101,6 +113,7 @@
       habitHistories.push({ ...habit, completedAt: dateNow });
     }
     habitHistories = habitHistories;
+    habitStats = getStats(new Date());
     localStorage.setItem("habitHistories", JSON.stringify(habitHistories));
   };
 
@@ -203,7 +216,11 @@
         on:keypress={preventEnter}
         on:keyup={editHabit}
         on:blur={deleteOnBlur}
-        class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none focus:outline-none"
+        class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none focus:outline-none {habitHistories.find(
+          (val) => val.id === habit.id && val.completedAt === dateNow
+        )
+          ? `line-through opacity-50`
+          : ``}"
         role="textbox"
         contenteditable>{habit.name}</span
       >
@@ -249,7 +266,7 @@
               class="w-10 bg-amber-500"
               style="height: {stat.total * 10}px;"
             />
-            <div class="font-bold bg-amber-700 font-mono">{index + 1}</div>
+            <div class="font-bold bg-amber-700 font-mono">{stat.date}</div>
           </button>
         {/each}
       </div>
