@@ -6,5 +6,6 @@ A simple habit tracker tool with no gamification, no ads, and no notification fe
 - [x] Add habit
 - [x] Complete the habit
 - [x] Auto-reset completed habit the following day
-- [ ] Habit completion chart
+- [x] Habit completion chart
+- [ ] Deploy to firebase hosting
 - [ ] Integration with Google Drive

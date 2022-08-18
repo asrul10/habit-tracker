@@ -15,6 +15,7 @@
   let habitHistoryByMonth = [];
   let habitStats = [];
   let selectedMonth = "";
+  let habitDetail = [];
 
   const formatDate = (date, yearMonth = false) => {
     let formatted = [
@@ -261,6 +262,7 @@
             id="stat-{stat.id}"
             type="button"
             class="text-center mr-3 relative cursor-pointer hover:opacity-80"
+            on:click={() => (habitDetail = stat.habits.map((val) => val.name))}
           >
             <div
               class="w-10 bg-amber-500"
@@ -271,10 +273,13 @@
         {/each}
       </div>
     </div>
-    <div class="bg-black w-full py-2 px-4 rounded text-left bg-opacity-50">
-      Wakeup early at 6 A.M<br />
-      Workout
-    </div>
+    {#if habitDetail.length}
+      <div class="bg-black w-full py-2 px-4 rounded text-left bg-opacity-50">
+        {#each habitDetail as habit}
+          {habit}<br />
+        {/each}
+      </div>
+    {/if}
   </div>
 </main>
 
