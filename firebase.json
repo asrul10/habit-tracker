@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "kotaxdev-habit-tracker",
     "public": "dist",
     "ignore": [
       "firebase.json",
