@@ -1,6 +1,6 @@
-# Privacy Friendly Habit Tracker
+# Privacy Friendly Habits Tracker
 
-A simple habit tracker tool with no gamification, no ads, and no notification features. Just record your small win every day.
+[Habits Tracker](https://habit.kotaxdev.com/) is a simple habits tracker tool with no gamification, no ads, and no notification features. Just record your small win every day.
 
 ## Features
 - [x] Add habit
@@ -9,3 +9,8 @@ A simple habit tracker tool with no gamification, no ads, and no notification fe
 - [x] Habit completion chart
 - [ ] Deploy to firebase hosting
 - [ ] Integration with Google Drive
+
+## Usage
+```bash
+$ npm install && npm run dev
+```

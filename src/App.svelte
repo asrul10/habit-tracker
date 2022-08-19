@@ -4,11 +4,11 @@
   let habits = JSON.parse(localStorage.getItem("habits")) || [
     {
       id: 1,
-      name: "Wakeup early at 6 A.M",
+      name: "10 minutes reading a book",
     },
     {
       id: 2,
-      name: "Workout",
+      name: "10 minutes workout",
     },
   ];
   let habitHistories = JSON.parse(localStorage.getItem("habitHistories")) || [];
