@@ -1,16 +1,22 @@
 <script>
   import { afterUpdate, onMount } from "svelte";
 
-  let habits = JSON.parse(localStorage.getItem("habits")) || [
-    {
-      id: 1,
-      name: "10 minutes reading a book",
-    },
-    {
-      id: 2,
-      name: "10 minutes workout",
-    },
-  ];
+  if (!localStorage.getItem("habits")) {
+    localStorage.setItem(
+      "habits",
+      JSON.stringify([
+        {
+          id: 1,
+          name: "10 minutes reading a book",
+        },
+        {
+          id: 2,
+          name: "10 minutes workout",
+        },
+      ])
+    );
+  }
+  let habits = JSON.parse(localStorage.getItem("habits"));
   let habitHistories = JSON.parse(localStorage.getItem("habitHistories")) || [];
   let habitHistoryByMonth = [];
   let habitStats = [];
@@ -108,7 +114,7 @@
         uncompleteIndex = index;
       }
     }
-    if (uncompleteIndex) {
+    if (uncompleteIndex !== null) {
       habitHistories.splice(uncompleteIndex, 1);
     } else {
       habitHistories.push({ ...habit, completedAt: dateNow });
@@ -183,8 +189,8 @@
   };
 
   onMount(() => {
-    document.getElementById(`month-${selectedMonth}`).scrollIntoView();
-    document.getElementById(`stat-${dateNow}`).scrollIntoView();
+    document.getElementById(`month-${selectedMonth}`)?.scrollIntoView();
+    document.getElementById(`stat-${dateNow}`)?.scrollIntoView();
   });
 </script>
 
