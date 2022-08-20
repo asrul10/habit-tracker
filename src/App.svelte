@@ -7,11 +7,11 @@
       JSON.stringify([
         {
           id: 1,
-          name: "10 minutes reading a book",
+          name: "10 minute reading a book",
         },
         {
           id: 2,
-          name: "10 minutes workout",
+          name: "10 minute workout",
         },
       ])
     );
@@ -120,6 +120,7 @@
       habitHistories.push({ ...habit, completedAt: dateNow });
     }
     habitHistories = habitHistories;
+    habitHistoryByMonth = historyByMonth();
     habitStats = getStats(new Date());
     localStorage.setItem("habitHistories", JSON.stringify(habitHistories));
   };
@@ -250,7 +251,7 @@
       {#each habitHistoryByMonth as yearMonth}
         <span
           id="month-{yearMonth}"
-          data-yearMonth={yearMonth}
+          data-year-month={yearMonth}
           on:click={changeMonth}
           class="py-1 px-4 rounded-full mr-2 cursor-pointer whitespace-nowrap hover:bg-amber-500 month-pills {selectedMonth ===
           yearMonth
