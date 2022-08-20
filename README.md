@@ -7,7 +7,7 @@
 - [x] Complete the habit
 - [x] Auto-reset completed habit the following day
 - [x] Habit completion chart
-- [ ] Deploy to firebase hosting
+- [x] Setup github workflows firebase hosting
 - [ ] Integration with Google Drive
 
 ## Usage
