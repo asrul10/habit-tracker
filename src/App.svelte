@@ -195,7 +195,7 @@
   });
 </script>
 
-<main class="text-white sm:w-96 mx-auto py-10">
+<main class="text-white sm:w-96 px-4 mx-auto py-8">
   <div class="text-center">
     <h1 class="text-4xl font-bold mb-8">Habits Tracker</h1>
   </div>
