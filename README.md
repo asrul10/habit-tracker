@@ -8,7 +8,6 @@
 - [x] Auto-reset completed habit the following day
 - [x] Habit completion chart
 - [x] Setup github workflows firebase hosting
-- [ ] Integration with Google Drive
 
 ## Usage
 ```bash

@@ -22,6 +22,7 @@
   let habitStats = [];
   let selectedMonth = "";
   let habitDetail = [];
+  let dragPosition = null;
 
   const formatDate = (date, yearMonth = false) => {
     let formatted = [
@@ -189,6 +190,43 @@
     }
   };
 
+  const onDragend = (event) => {
+    const { currentTarget } = event;
+    const { target } = currentTarget.dataset;
+
+    let indexFrom = null;
+    let indexTarget = null;
+    let currHabit = null;
+    for (let index = 0; index < habits.length; index++) {
+      const habit = habits[index];
+      if (habit.id === parseInt(target)) {
+        indexFrom = index;
+        currHabit = habit;
+      }
+      if (habit.id === parseInt(dragPosition)) {
+        indexTarget = index;
+      }
+    }
+
+    habits.splice(indexFrom, 1);
+    habits.splice(indexTarget, 0, currHabit);
+
+    habits = habits;
+    dragPosition = null;
+  };
+
+  const onDragover = (event) => {
+    const { currentTarget } = event;
+    const { target } = currentTarget.dataset;
+    dragPosition = target;
+    currentTarget.classList.add("border-t-4", "border-amber-500");
+  };
+
+  const onDragleave = (event) => {
+    const { currentTarget } = event;
+    currentTarget.classList.remove("border-t-4", "border-amber-500");
+  };
+
   onMount(() => {
     document.getElementById(`month-${selectedMonth}`)?.scrollIntoView();
     document.getElementById(`stat-${dateNow}`)?.scrollIntoView();
@@ -201,7 +239,15 @@
   </div>
 
   {#each habits as habit}
-    <div class="mb-2 flex items-start gap-x-2">
+    <div
+      data-target={habit.id}
+      class="mb-2 flex items-start gap-x-2 relative"
+      draggable="true"
+      on:dragend={onDragend}
+      on:dragover={onDragover}
+      on:dragleave={onDragleave}
+    >
+      <div class="cursor-pointer opacity-60 font-bold">:&nbsp;:</div>
       <span
         class="w-5 h-5 rounded mt-1 p-1 mr-1 cursor-pointer {habitHistories.find(
           (val) => val.id === habit.id && val.completedAt === dateNow
