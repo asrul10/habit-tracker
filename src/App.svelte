@@ -282,6 +282,7 @@
   {/each}
 
   <div class="mb-2 flex items-start gap-x-2">
+    <div class="cursor-pointer opacity-60 font-bold invisible">:&nbsp;:</div>
     <span class="w-5 h-5 mr-1" />
     <span
       on:keyup={addHabit}
