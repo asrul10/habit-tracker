@@ -211,7 +211,7 @@
     habits.splice(indexFrom, 1);
     habits.splice(indexTarget, 0, currHabit);
 
-    habits = habits;
+    saveHabits(habits);
     dragPosition = null;
   };
 
