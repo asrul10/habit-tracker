@@ -149,9 +149,21 @@
         continue;
       }
       habits[index].name = innerText.replace(/\n\r/gm, "");
+      updateHabitHistories(habit.id, habits[index].name);
       break;
     }
     saveHabits(habits);
+  };
+
+  const updateHabitHistories = (id, name) => {
+    for (let index = 0; index < habitHistories.length; index++) {
+      const history = habitHistories[index];
+      if (history.id === id) {
+        habitHistories[index].name = name;
+      }
+    }
+    habitHistories = habitHistories;
+    habitDetail = [];
   };
 
   const deleteOnBlur = (event) => {

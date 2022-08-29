@@ -8,6 +8,7 @@
 - [x] Auto-reset completed habit the following day
 - [x] Habit completion chart
 - [x] Setup github workflows firebase hosting
+- [ ] Local encryption to save in the firestore
 
 ## Usage
 ```bash
