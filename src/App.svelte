@@ -202,20 +202,17 @@
     }
   };
 
-  const onDragend = (event) => {
-    const { currentTarget } = event;
-    const { target } = currentTarget.dataset;
-
+  const adjustPosition = (habitId) => {
     let indexFrom = null;
     let indexTarget = null;
     let currHabit = null;
     for (let index = 0; index < habits.length; index++) {
       const habit = habits[index];
-      if (habit.id === parseInt(target)) {
+      if (habit.id === habitId) {
         indexFrom = index;
         currHabit = habit;
       }
-      if (habit.id === parseInt(dragPosition)) {
+      if (habit.id === dragPosition) {
         indexTarget = index;
       }
     }
@@ -227,16 +224,75 @@
     dragPosition = null;
   };
 
+  const onDragend = (event) => {
+    const { currentTarget } = event;
+    const { target } = currentTarget.dataset;
+    adjustPosition(parseInt(target));
+  };
+
   const onDragover = (event) => {
     const { currentTarget } = event;
     const { target } = currentTarget.dataset;
-    dragPosition = target;
-    currentTarget.classList.add("border-t-4", "border-amber-500");
+    dragPosition = parseInt(target);
   };
 
-  const onDragleave = (event) => {
+  const getCurrentPosition = (currentId, positionY) => {
+    const listPosition = [];
+    let currPosition = null;
+
+    for (let index = 0; index < habits.length; index++) {
+      const { id, name } = habits[index];
+      if (currentId === id) {
+        continue;
+      }
+      const ele = document.getElementById(`parent-${id}`);
+      listPosition.push({
+        id: id,
+        positionY: ele.offsetTop,
+        ele: ele,
+        name: name,
+      });
+    }
+
+    for (let index = 0; index < listPosition.length; index++) {
+      const val = listPosition[index];
+      const min = val.positionY;
+      const max = val.positionY + val.ele.offsetHeight + 8;
+      const curr = positionY;
+      if (min <= curr && max > curr) {
+        currPosition = val;
+        break;
+      }
+    }
+
+    return currPosition;
+  };
+
+  const handleTouchMove = (event) => {
     const { currentTarget } = event;
-    currentTarget.classList.remove("border-t-4", "border-amber-500");
+    const { target } = currentTarget.dataset;
+
+    let touchLocation = event.targetTouches[0];
+    let pageX = Math.floor(touchLocation.pageX) + "px";
+    let pageY = Math.floor(touchLocation.pageY) + "px";
+    currentTarget.style.position = "absolute";
+    currentTarget.style.left = pageX;
+    currentTarget.style.top = pageY;
+    const currentPosition = getCurrentPosition(
+      parseInt(target),
+      parseInt(pageY)
+    );
+    dragPosition = currentPosition?.id;
+  };
+
+  const handleTouchEnd = (event) => {
+    const { currentTarget } = event;
+    const { target } = currentTarget.dataset;
+
+    adjustPosition(parseInt(target));
+    currentTarget.style.position = "relative";
+    currentTarget.style.left = 0;
+    currentTarget.style.top = 0;
   };
 
   onMount(() => {
@@ -247,17 +303,21 @@
 
 <main class="text-white sm:w-96 px-4 mx-auto py-8">
   <div class="text-center">
-    <h1 class="text-4xl font-bold mb-8">Habits Tracker</h1>
+    <h1 class="text-4xl font-bold mb-8">🌱 Habits Tracker</h1>
   </div>
 
   {#each habits as habit}
     <div
       data-target={habit.id}
-      class="mb-2 flex items-start gap-x-2 relative"
+      class={`mb-2 flex items-start gap-x-2 relative ${
+        dragPosition === habit.id ? "opacity-30" : ""
+      }`}
       draggable="true"
+      id={`parent-${habit.id}`}
       on:dragend={onDragend}
       on:dragover={onDragover}
-      on:dragleave={onDragleave}
+      on:touchmove={handleTouchMove}
+      on:touchend={handleTouchEnd}
     >
       <div class="cursor-pointer opacity-60 font-bold">:&nbsp;:</div>
       <span
