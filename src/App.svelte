@@ -121,6 +121,7 @@
     } else {
       habitHistories.push({ ...habit, completedAt: dateNow });
     }
+    selectedMonth = formatDate(new Date(), true);
     habitHistories = habitHistories;
     habitHistoryByMonth = historyByMonth();
     habitStats = getStats(new Date());
@@ -306,10 +307,8 @@
   });
 </script>
 
-<main class="text-white sm:w-96 px-4 mx-auto py-8">
-  <div class="text-center">
-    <h1 class="text-4xl font-bold mb-8">🌱 Habits Tracker</h1>
-  </div>
+<main class="text-white base-container px-4 mx-auto py-8">
+  <h1 class="text-4xl font-bold mb-8">🌱 Habits Tracker</h1>
 
   {#each habits as habit}
     <div
@@ -328,7 +327,7 @@
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 320 512"
-          class="w-5 h-5 mt-1 opacity-80"
+          class="w-5 h-5 mt-1 opacity-30"
         >
           <path
             fill="#fff"
@@ -337,7 +336,7 @@
         </svg>
       </div>
       <span
-        class="w-5 h-5 rounded mt-1 p-1 mr-1 cursor-pointer {habitHistories.find(
+        class="w-5 h-5 rounded mt-1 p-1 cursor-pointer {habitHistories.find(
           (val) => val.id === habit.id && val.completedAt === dateNow
         )
           ? `bg-blue-500`
@@ -370,7 +369,7 @@
   {/each}
 
   <div class="mb-2 flex items-start gap-x-2">
-    <div class="cursor-pointer opacity-60 font-bold invisible">:&nbsp;:</div>
+    <div class="w-5 h-5 invisible" />
     <span class="w-5 h-5 mr-1" />
     <span
       on:keyup={addHabit}

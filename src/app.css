@@ -10,6 +10,10 @@
   display: block;
 }
 
+.base-container {
+  max-width: 640px;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
