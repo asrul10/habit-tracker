@@ -151,21 +151,9 @@
         continue;
       }
       habits[index].name = innerText.replace(/\n\r/gm, "");
-      updateHabitHistories(habit.id, habits[index].name);
       break;
     }
     saveHabits(habits);
-  };
-
-  const updateHabitHistories = (id, name) => {
-    for (let index = 0; index < habitHistories.length; index++) {
-      const history = habitHistories[index];
-      if (history.id === id) {
-        habitHistories[index].name = name;
-      }
-    }
-    habitHistories = habitHistories;
-    habitDetail = [];
   };
 
   const deleteOnBlur = (event) => {
@@ -308,12 +296,12 @@
 </script>
 
 <main class="text-white base-container px-4 mx-auto py-8">
-  <h1 class="text-4xl font-bold mb-8">🌱 Habits Tracker</h1>
+  <h1 class="text-4xl font-bold mb-10">🌱 Habits Tracker</h1>
 
   {#each habits as habit}
     <div
       data-target={habit.id}
-      class={`mb-2 flex items-start gap-x-2 relative ${
+      class={`mb-3 flex items-start gap-x-2 relative ${
         dragPosition === habit.id ? "opacity-30" : ""
       }`}
       draggable="true"
@@ -323,7 +311,7 @@
       on:touchmove={handleTouchMove}
       on:touchend={handleTouchEnd}
     >
-      <div class="cursor-pointer">
+      <div class="cursor-grab">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 320 512"
@@ -369,8 +357,6 @@
   {/each}
 
   <div class="mb-2 flex items-start gap-x-2">
-    <div class="w-5 h-5 invisible" />
-    <span class="w-5 h-5 mr-1" />
     <span
       on:keyup={addHabit}
       on:keypress={preventEnter}
@@ -387,7 +373,7 @@
           id="month-{yearMonth}"
           data-year-month={yearMonth}
           on:click={changeMonth}
-          class="py-1 px-4 rounded-full mr-2 cursor-pointer whitespace-nowrap hover:bg-amber-500 month-pills {selectedMonth ===
+          class="font-semibold py-1 px-4 rounded-full mr-2 cursor-pointer whitespace-nowrap hover:bg-amber-500 month-pills {selectedMonth ===
           yearMonth
             ? `bg-amber-500`
             : `bg-gray-500`}"
