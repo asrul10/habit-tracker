@@ -259,6 +259,7 @@
   };
 
   const handleTouchMove = (event) => {
+    event.preventDefault();
     const { currentTarget } = event;
     const { target } = currentTarget.dataset;
 
@@ -295,7 +296,7 @@
   });
 </script>
 
-<main class="text-white base-container px-4 mx-auto py-8">
+<main class="text-white base-container px-4 mx-auto py-8 overflow-x-hidden max-w-full">
   <h1 class="text-4xl font-bold mb-10">🌱 Habits Tracker</h1>
 
   {#each habits as habit}
@@ -351,18 +352,38 @@
           ? `line-through opacity-50`
           : ``}"
         role="textbox"
-        contenteditable>{habit.name}</span
+        contenteditable="true">{habit.name}</span
       >
     </div>
   {/each}
 
   <div class="mb-2 flex items-start gap-x-2">
+    <div class="opacity-20">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 320 512"
+        class="w-5 h-5 mt-1 opacity-30"
+      >
+        <path
+          fill="#fff"
+          d="M88 352C110.1 352 128 369.9 128 392V440C128 462.1 110.1 480 88 480H40C17.91 480 0 462.1 0 440V392C0 369.9 17.91 352 40 352H88zM280 352C302.1 352 320 369.9 320 392V440C320 462.1 302.1 480 280 480H232C209.9 480 192 462.1 192 440V392C192 369.9 209.9 352 232 352H280zM40 320C17.91 320 0 302.1 0 280V232C0 209.9 17.91 192 40 192H88C110.1 192 128 209.9 128 232V280C128 302.1 110.1 320 88 320H40zM280 192C302.1 192 320 209.9 320 232V280C320 302.1 302.1 320 280 320H232C209.9 320 192 302.1 192 280V232C192 209.9 209.9 192 232 192H280zM40 160C17.91 160 0 142.1 0 120V72C0 49.91 17.91 32 40 32H88C110.1 32 128 49.91 128 72V120C128 142.1 110.1 160 88 160H40zM280 32C302.1 32 320 49.91 320 72V120C320 142.1 302.1 160 280 160H232C209.9 160 192 142.1 192 120V72C192 49.91 209.9 32 232 32H280z"
+        />
+      </svg>
+    </div>
+    <span class="w-5 h-5 rounded mt-1 p-1 opacity-20 bg-white">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path
+          fill="#fff"
+          d="M438.6 105.4C451.1 117.9 451.1 138.1 438.6 150.6L182.6 406.6C170.1 419.1 149.9 419.1 137.4 406.6L9.372 278.6C-3.124 266.1-3.124 245.9 9.372 233.4C21.87 220.9 42.13 220.9 54.63 233.4L159.1 338.7L393.4 105.4C405.9 92.88 426.1 92.88 438.6 105.4H438.6z"
+        />
+      </svg>
+    </span>
     <span
       on:keyup={addHabit}
       on:keypress={preventEnter}
       class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none outline-none placeholder-habit cursor-text"
       role="textbox"
-      contenteditable
+      contenteditable="true"
     />
   </div>
 
