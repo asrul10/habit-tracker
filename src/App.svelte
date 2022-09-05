@@ -296,7 +296,7 @@
   });
 </script>
 
-<main class="text-white base-container px-4 mx-auto py-8 overflow-x-hidden max-w-full">
+<main class="text-white base-container px-4 mx-auto py-8">
   <h1 class="text-4xl font-bold mb-10">🌱 Habits Tracker</h1>
 
   {#each habits as habit}
