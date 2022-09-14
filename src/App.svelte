@@ -262,13 +262,14 @@
     event.preventDefault();
     const { currentTarget } = event;
     const { target } = currentTarget.dataset;
+    const ele = document.getElementById(`parent-${target}`);
 
     let touchLocation = event.targetTouches[0];
     let pageX = Math.floor(touchLocation.pageX) + "px";
     let pageY = Math.floor(touchLocation.pageY) + "px";
-    currentTarget.style.position = "absolute";
-    currentTarget.style.left = pageX;
-    currentTarget.style.top = pageY;
+    ele.style.position = "absolute";
+    ele.style.left = pageX;
+    ele.style.top = pageY;
     const currentPosition = getCurrentPosition(
       parseInt(target),
       parseInt(pageY)
@@ -280,12 +281,13 @@
   const handleTouchEnd = (event) => {
     const { currentTarget } = event;
     const { target } = currentTarget.dataset;
+    const ele = document.getElementById(`parent-${target}`);
 
     if (touchMove) {
       adjustPosition(parseInt(target));
-      currentTarget.style.position = "relative";
-      currentTarget.style.left = 0;
-      currentTarget.style.top = 0;
+      ele.style.position = "relative";
+      ele.style.left = "0";
+      ele.style.top = "0";
       touchMove = false;
     }
   };
@@ -309,10 +311,13 @@
       id={`parent-${habit.id}`}
       on:dragend={onDragend}
       on:dragover={onDragover}
-      on:touchmove={handleTouchMove}
-      on:touchend={handleTouchEnd}
     >
-      <div class="cursor-grab">
+      <div
+        class="cursor-grab w-7 h-7"
+        data-target={habit.id}
+        on:touchmove={handleTouchMove}
+        on:touchend={handleTouchEnd}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 320 512"
