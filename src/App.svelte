@@ -108,6 +108,14 @@
     localStorage.setItem("habits", JSON.stringify(habits));
   };
 
+  const isCompletedToday = (histories) => {
+    return histories
+      .filter((val) => val.completedAt === dateNow)
+      .map((val) => val.id);
+  };
+
+  $: todayCompleted = isCompletedToday(habitHistories);
+
   const saveCompletedHabits = (habit) => {
     let uncompleteIndex = null;
     for (let index = 0; index < habitHistories.length; index++) {
@@ -304,9 +312,9 @@
   {#each habits as habit}
     <div
       data-target={habit.id}
-      class={`mb-3 flex items-start gap-x-2 relative ${
+      class={`mb-3 flex items-start bg-slate-600 rounded-md p-3 gap-x-2 relative ${
         dragPosition === habit.id ? "opacity-30" : ""
-      }`}
+      } ${todayCompleted.includes(habit.id) ? "bg-opacity-40" : ""}`}
       draggable="true"
       id={`parent-${habit.id}`}
       on:dragend={onDragend}
@@ -329,9 +337,26 @@
           />
         </svg>
       </div>
-      <span
-        class="w-5 h-5 rounded mt-1 p-1 cursor-pointer {habitHistories.find(
-          (val) => val.id === habit.id && val.completedAt === dateNow
+
+      <div
+        id="habit-label-{habit.id}"
+        data-id={habit.id}
+        on:keypress={preventEnter}
+        on:keyup={editHabit}
+        on:blur={deleteOnBlur}
+        class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none focus:outline-none {todayCompleted.includes(
+          habit.id
+        )
+          ? `line-through opacity-50`
+          : ``}"
+        role="textbox"
+        contenteditable="true"
+      >
+        {habit.name}
+      </div>
+      <div
+        class="w-5 h-5 rounded mt-1 p-1 cursor-pointer {todayCompleted.includes(
+          habit.id
         )
           ? `bg-blue-500`
           : `bg-white`}"
@@ -344,26 +369,12 @@
             d="M438.6 105.4C451.1 117.9 451.1 138.1 438.6 150.6L182.6 406.6C170.1 419.1 149.9 419.1 137.4 406.6L9.372 278.6C-3.124 266.1-3.124 245.9 9.372 233.4C21.87 220.9 42.13 220.9 54.63 233.4L159.1 338.7L393.4 105.4C405.9 92.88 426.1 92.88 438.6 105.4H438.6z"
           />
         </svg>
-      </span>
-      <span
-        id="habit-label-{habit.id}"
-        data-id={habit.id}
-        on:keypress={preventEnter}
-        on:keyup={editHabit}
-        on:blur={deleteOnBlur}
-        class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none focus:outline-none {habitHistories.find(
-          (val) => val.id === habit.id && val.completedAt === dateNow
-        )
-          ? `line-through opacity-50`
-          : ``}"
-        role="textbox"
-        contenteditable="true">{habit.name}</span
-      >
+      </div>
     </div>
   {/each}
 
-  <div class="mb-2 flex items-start gap-x-2">
-    <div class="opacity-20">
+  <div class="mb-2 flex items-start bg-slate-600 rounded-md p-3 gap-x-2">
+    <div class="opacity-20 w-7 h-7">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 320 512"
@@ -375,15 +386,7 @@
         />
       </svg>
     </div>
-    <span class="w-5 h-5 rounded mt-1 p-1 opacity-20 bg-white">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-        <path
-          fill="#fff"
-          d="M438.6 105.4C451.1 117.9 451.1 138.1 438.6 150.6L182.6 406.6C170.1 419.1 149.9 419.1 137.4 406.6L9.372 278.6C-3.124 266.1-3.124 245.9 9.372 233.4C21.87 220.9 42.13 220.9 54.63 233.4L159.1 338.7L393.4 105.4C405.9 92.88 426.1 92.88 438.6 105.4H438.6z"
-        />
-      </svg>
-    </span>
-    <span
+    <div
       on:keyup={addHabit}
       on:keypress={preventEnter}
       class="block w-full overflow-hidden textarea-resize min-h-fit text-lg resize-none outline-none placeholder-habit cursor-text"
