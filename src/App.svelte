@@ -24,6 +24,7 @@
   let habitDetail = [];
   let dragPosition = null;
   let touchMove = false;
+  let dragCurrentId = null;
 
   const formatDate = (date, yearMonth = false) => {
     let formatted = [
@@ -222,16 +223,23 @@
     dragPosition = null;
   };
 
-  const onDragend = (event) => {
+  const ondDragstart = (event) => {
     const { currentTarget } = event;
     const { target } = currentTarget.dataset;
-    adjustPosition(parseInt(target));
+    dragCurrentId = parseInt(target);
+  };
+
+  const onDragend = (event) => {
+    dragCurrentId = null;
   };
 
   const onDragover = (event) => {
     const { currentTarget } = event;
-    const { target } = currentTarget.dataset;
-    dragPosition = parseInt(target);
+    const { index } = currentTarget.dataset;
+    const newIndex = parseInt(index);
+    const oldIndex = habits.findIndex((val) => val.id === dragCurrentId);
+    habits.splice(newIndex, 0, habits.splice(oldIndex, 1)[0]);
+    saveHabits(habits);
   };
 
   const getCurrentPosition = (currentId, positionY) => {
@@ -309,20 +317,23 @@
 <main class="text-white base-container px-4 mx-auto py-8">
   <h1 class="text-4xl font-bold mb-10">🌱 Habits Tracker</h1>
 
-  {#each habits as habit}
+  {#each habits as habit, index}
     <div
+      data-index={index}
       data-target={habit.id}
       class={`mb-3 flex items-start bg-slate-600 rounded-md p-3 gap-x-2 relative ${
-        dragPosition === habit.id ? "opacity-30" : ""
-      } ${todayCompleted.includes(habit.id) ? "bg-opacity-40" : ""}`}
+        todayCompleted.includes(habit.id) ? "bg-opacity-40" : ""
+      } ${dragCurrentId === habit.id ? "opacity-30" : ""}`}
       draggable="true"
       id={`parent-${habit.id}`}
+      on:dragstart={ondDragstart}
       on:dragend={onDragend}
       on:dragover={onDragover}
     >
       <div
         class="cursor-grab w-7 h-7"
         data-target={habit.id}
+        data-index={index}
         on:touchmove={handleTouchMove}
         on:touchend={handleTouchEnd}
       >
