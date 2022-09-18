@@ -51,7 +51,7 @@
 
   afterUpdate(() => {
     inputEle.style.height = "auto";
-    inputEle.style.height = inputEle.scrollHeight + "px";
+    inputEle.style.height = inputEle.scrollHeight + 10 + "px";
   });
 </script>
 
@@ -60,9 +60,10 @@
   data-index={index}
   data-target={habit.id}
   class:bg-opacity-40={isComplete || onDrag}
-  class:border-lime-400={onDrag || focus}
   on:dragover={onDragover}
-  class={`mb-5 border-2 border-zinc-600 bg-zinc-600 rounded-md p-3`}
+  class={`${
+    onDrag || focus ? "border-lime-400" : "border-transparent"
+  } mb-5 border-2 bg-zinc-600 rounded-md p-3`}
 >
   <div class="flex items-start">
     <div
@@ -97,7 +98,7 @@
       rows="1"
       disabled={disableEdit}
       class:opacity-50={isComplete}
-      class="block box-border overflow-hidden w-full bg-transparent resize-none text-xl focus:outline-none"
+      class="block box-border p-0 overflow-hidden w-full bg-transparent resize-none text-xl focus:outline-none"
       value={habit.name}
     />
     <div class="w-7 h-7 flex items-center justify-center ml-2 shrink-0 grow-0">
