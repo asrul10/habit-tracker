@@ -1,19 +1,7 @@
-:root {
-  color-scheme: dark;
-}
-
-.hide {
-  display: none;
-}
-
-.show {
-  display: block;
-}
-
-.base-container {
-  max-width: 640px;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
