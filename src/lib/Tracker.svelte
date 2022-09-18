@@ -83,7 +83,7 @@
       type="button"
       data-action="next"
       on:click={changeDate}
-      class="w-7 opacity-50 ml-2 cursor-pointer hover:bg-zinc-500 rounded shrink-0 grow-0 flex justify-center items-center"
+      class="w-7 opacity-50 ml-2 cursor-pointer hover:bg-zinc-500 focus-within:bg-zinc-700 rounded shrink-0 grow-0 flex justify-center items-center"
     >
       <img src={cevronRight} class="w-3" alt="next" />
     </button>

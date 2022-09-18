@@ -9,7 +9,7 @@
       <img src={seedingIcon} alt="habit" class="w-9 h-9" />
     </div>
     <h1 class="text-4xl font-bold">
-      <span class="text-lime-400">Habits</span> Tracker
+      <span class="text-lime-400">Habit</span> Tracker
     </h1>
   </div>
 

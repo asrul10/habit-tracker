@@ -16,7 +16,7 @@
           name: "Workout",
         },
         {
-          id: 2,
+          id: 3,
           name: "Writing",
         },
       ])
@@ -184,6 +184,29 @@
     habitHistories = habitHistories;
     localStorage.setItem("habitHistories", JSON.stringify(habitHistories));
   };
+
+  const resetData = () => {
+    if (!confirm("This will reset all your data!")) {
+      return;
+    }
+    habits = [
+      {
+        id: 1,
+        name: "Reading a book",
+      },
+      {
+        id: 2,
+        name: "Workout",
+      },
+      {
+        id: 3,
+        name: "Writing",
+      },
+    ];
+    habitHistories = [];
+    localStorage.setItem("habits", JSON.stringify(habits));
+    localStorage.setItem("habitHistories", JSON.stringify(habitHistories));
+  };
 </script>
 
 <div>
@@ -208,8 +231,8 @@
   {/each}
   <div
     class={`${
-      focus ? "outline outline-2 outline-lime-400" : ""
-    } mb-2 flex items-start bg-zinc-600 rounded-md p-3 gap-x-2`}
+      focus ? "border-lime-400" : "border-transparent"
+    } mb-5 flex border-2 items-start bg-zinc-600 rounded-md p-3 gap-x-2`}
   >
     <textarea
       on:input={autoResize}
@@ -223,4 +246,11 @@
       disabled={disableEdit}
     />
   </div>
+  <button
+    on:click={resetData}
+    type="button"
+    class="w-full rounded-md hover:bg-red-600 bg-red-500 font-bold p-2"
+  >
+    Reset Data
+  </button>
 </div>

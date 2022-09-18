@@ -60,9 +60,9 @@
   data-index={index}
   data-target={habit.id}
   class:bg-opacity-40={isComplete || onDrag}
-  class:outline={onDrag || focus}
+  class:border-lime-400={onDrag || focus}
   on:dragover={onDragover}
-  class={`mb-5 outline-2 outline-lime-400 bg-zinc-600 rounded-md p-3`}
+  class={`mb-5 border-2 border-zinc-600 bg-zinc-600 rounded-md p-3`}
 >
   <div class="flex items-start">
     <div
