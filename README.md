@@ -1,10 +1,11 @@
-# Privacy Friendly Habits Tracker
+# 🌱 Privacy Friendly Habit Tracker
 
-[Habits Tracker](https://habit.kotaxdev.com/) is a simple habits tracker tool with no gamification, no ads, and no notification features. Just record your small win every day.
+[Habit Tracker](https://habit.kotaxdev.com/) is a simple habit tracker tool built with [svelte](https://svelte.dev/) with no gamification, no ads, and no notification. Just record your small win every day.
 
 ## Features
-- Auto-reset completed habit in the next day
+- Auto uncomplete habit in the next day
 - Habit completion stats
+- Sync data (⌛)
 
 ## Usage
 ```bash
