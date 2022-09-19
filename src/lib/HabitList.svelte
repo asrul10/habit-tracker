@@ -31,6 +31,8 @@
   let disableEdit = false;
   let focus = false;
   let uncompleteOnly = false;
+  let fileImport = null;
+  let toast = null;
 
   $: todayCompleted = isCompletedToday(habitHistories);
 
@@ -207,10 +209,62 @@
     habitHistories = [];
     localStorage.setItem("habits", JSON.stringify(habits));
     localStorage.setItem("habitHistories", JSON.stringify(habitHistories));
+    showToast("Data reseted!");
   };
 
   const toggleList = () => {
     uncompleteOnly = !uncompleteOnly;
+  };
+
+  const exportData = () => {
+    const data = { habits, habitHistories };
+    const dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(data));
+    const downloadAnchorNode = document.createElement("a");
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "habit.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
+  const importData = (event) => {
+    const fileList = event.target.files;
+    if (!fileList[0]) {
+      showToast("File not found!");
+      return;
+    }
+    if (fileList[0].type !== "application/json") {
+      showToast("Invalid file!");
+      return;
+    }
+    var readFile = new FileReader();
+    readFile.readAsText(fileList[0]);
+    readFile.onloadend = function (e) {
+      if (typeof e.target.result !== "string") {
+        return;
+      }
+      const json = JSON.parse(e.target.result);
+      console.log(json);
+      habits = json.habits;
+      habitHistories = json.habitHistories;
+      localStorage.setItem("habits", JSON.stringify(habits));
+      localStorage.setItem("habitHistories", JSON.stringify(habitHistories));
+      fileImport.value = "";
+      showToast("Data imported!");
+    };
+  };
+
+  const showToast = (text) => {
+    toast.innerText = text;
+    toast.style.bottom = "15px";
+    toast.classList.remove("hidden");
+    setTimeout(() => {
+      toast.innerText = "";
+      toast.style.bottom = null;
+      toast.classList.add("hidden");
+    }, 3000);
   };
 </script>
 
@@ -224,7 +278,7 @@
     >
       <span class="w-5 rounded-full bg-white" />
     </div>
-    Show uncomplete only
+    Show incomplete only
   </div>
   {#each habits as habit, index}
     {#if todayCompleted.includes(habit.id) !== (uncompleteOnly || null)}
@@ -264,11 +318,38 @@
       disabled={disableEdit}
     />
   </div>
+  <div class="flex gap-3">
+    <button
+      on:click={exportData}
+      type="button"
+      class="w-full rounded-md bg-zinc-300 mb-5 text-black hover:opacity-100 opacity-70 font-bold p-2"
+    >
+      Export Data
+    </button>
+    <button
+      on:click={() => fileImport.click()}
+      type="button"
+      class="w-full rounded-md bg-zinc-300 mb-5 text-black hover:opacity-100 opacity-70 font-bold p-2"
+    >
+      Import Data
+    </button>
+  </div>
+  <input
+    class="hidden"
+    type="file"
+    bind:this={fileImport}
+    on:change={importData}
+    accept=".json,application/json"
+  />
   <button
     on:click={resetData}
     type="button"
-    class="w-full rounded-md hover:bg-red-500 hover:text-white border-2 border-red-500 text-red-500 opacity-80 font-bold p-2"
+    class="w-full rounded-md active:bg-red-500 active:text-white hover:opacity-100 border-2 border-red-500 text-red-500 opacity-80 font-bold p-2"
   >
     Reset Data
   </button>
+  <div
+    class="bg-lime-500 text-black rounded-md px-3 py-1 fixed hidden"
+    bind:this={toast}
+  />
 </div>
