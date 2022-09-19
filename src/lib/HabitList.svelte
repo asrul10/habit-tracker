@@ -30,6 +30,7 @@
   let dragCurrentId = null;
   let disableEdit = false;
   let focus = false;
+  let uncompleteOnly = false;
 
   $: todayCompleted = isCompletedToday(habitHistories);
 
@@ -207,27 +208,44 @@
     localStorage.setItem("habits", JSON.stringify(habits));
     localStorage.setItem("habitHistories", JSON.stringify(habitHistories));
   };
+
+  const toggleList = () => {
+    uncompleteOnly = !uncompleteOnly;
+  };
 </script>
 
 <div>
+  <div class="flex gap-3 mb-4">
+    <div
+      on:click={toggleList}
+      class={`w-10 h-6 bg-white flex p-[0.1rem] rounded-full cursor-pointer ${
+        uncompleteOnly ? "justify-end bg-lime-500" : "bg-zinc-500"
+      }`}
+    >
+      <span class="w-5 rounded-full bg-white" />
+    </div>
+    Show uncomplete only
+  </div>
   {#each habits as habit, index}
-    <Habit
-      {index}
-      {habit}
-      isComplete={todayCompleted.includes(habit.id)}
-      onDrag={dragCurrentId === habit.id}
-      {disableEdit}
-      {onDragstart}
-      {onDragend}
-      {onDragover}
-      {onTouchStart}
-      {onTouchMove}
-      {onTouchEnd}
-      {saveHabit}
-      {saveHistory}
-      {deletHabit}
-      history={habitHistories.filter((val) => val.id === habit.id)}
-    />
+    {#if todayCompleted.includes(habit.id) !== (uncompleteOnly || null)}
+      <Habit
+        {index}
+        {habit}
+        isComplete={todayCompleted.includes(habit.id)}
+        onDrag={dragCurrentId === habit.id}
+        {disableEdit}
+        {onDragstart}
+        {onDragend}
+        {onDragover}
+        {onTouchStart}
+        {onTouchMove}
+        {onTouchEnd}
+        {saveHabit}
+        {saveHistory}
+        {deletHabit}
+        history={habitHistories.filter((val) => val.id === habit.id)}
+      />
+    {/if}
   {/each}
   <div
     class={`${
@@ -249,7 +267,7 @@
   <button
     on:click={resetData}
     type="button"
-    class="w-full rounded-md hover:bg-red-600 bg-red-500 font-bold p-2"
+    class="w-full rounded-md hover:bg-red-500 hover:text-white border-2 border-red-500 text-red-500 opacity-80 font-bold p-2"
   >
     Reset Data
   </button>
