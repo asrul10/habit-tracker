@@ -55,13 +55,13 @@
   };
 </script>
 
-<div class="mt-4 bg-zinc-700 p-3 rounded-md">
+<div class="mt-4 bg-zinc-700 p-3 rounded-lg">
   <div class="flex">
     <button
       type="button"
       data-action="previous"
       on:click={changeDate}
-      class="w-7 opacity-50 mr-2 cursor-pointer hover:bg-zinc-500 rounded shrink-0 grow-0 flex justify-center items-center"
+      class="w-7 opacity-50 mr-2 cursor-pointer hover:opacity-75 active:bg-zinc-500 rounded-md shrink-0 grow-0 flex justify-center items-center"
     >
       <img src={cevronLeft} class="w-3" alt="previous" />
     </button>
@@ -83,7 +83,7 @@
       type="button"
       data-action="next"
       on:click={changeDate}
-      class="w-7 opacity-50 ml-2 cursor-pointer hover:bg-zinc-500 focus-within:bg-zinc-700 rounded shrink-0 grow-0 flex justify-center items-center"
+      class="w-7 opacity-50 ml-2 cursor-pointer hover:opacity-75 active:bg-zinc-500 rounded-md shrink-0 grow-0 flex justify-center items-center"
     >
       <img src={cevronRight} class="w-3" alt="next" />
     </button>

@@ -63,7 +63,7 @@
   on:dragover={onDragover}
   class={`${
     onDrag || focus ? "border-lime-400" : "border-transparent"
-  } mb-5 border-2 bg-zinc-600 rounded-md p-3`}
+  } mb-5 border-2 bg-zinc-600 rounded-lg p-3`}
 >
   <div class="flex items-start">
     <div
