@@ -50,8 +50,10 @@
   };
 
   afterUpdate(() => {
-    inputEle.style.height = "auto";
-    inputEle.style.height = inputEle.scrollHeight + 10 + "px";
+    if (inputEle) {
+      inputEle.style.height = "auto";
+      inputEle.style.height = inputEle.scrollHeight + 10 + "px";
+    }
   });
 </script>
 
