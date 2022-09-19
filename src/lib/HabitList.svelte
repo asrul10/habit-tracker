@@ -257,7 +257,7 @@
       on:keyup={addHabit}
       on:keypress={preventEnter}
       on:focus={toggleFocus}
-      on:focusout={toggleFocus}
+      on:blur={toggleFocus}
       placeholder="Add new habit"
       rows="1"
       class="block box-border overflow-hidden w-full bg-transparent resize-none text-lg focus:outline-none px-3"

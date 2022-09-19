@@ -91,7 +91,7 @@
       on:input={editHabit}
       on:change={deleteHabit}
       on:focus={toggleFocus}
-      on:focusout={toggleFocus}
+      on:blur={toggleFocus}
       bind:this={inputEle}
       id="habit-label-{habit.id}"
       data-id={habit.id}
