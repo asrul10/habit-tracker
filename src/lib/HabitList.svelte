@@ -36,6 +36,10 @@
 
   $: todayCompleted = isCompletedToday(habitHistories);
 
+  window.addEventListener("focus", () => {
+    habits = habits;
+  });
+
   const isCompletedToday = (histories) => {
     return histories
       .filter((val) => val.completedAt === dateNow)
