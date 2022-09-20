@@ -269,10 +269,9 @@
 </script>
 
 <div>
-  <div class="flex gap-3 mb-4">
+  <div class="flex gap-3 mb-4 cursor-pointer font-bold" on:click={toggleList}>
     <div
-      on:click={toggleList}
-      class={`w-10 h-6 bg-white flex p-[0.1rem] rounded-full cursor-pointer ${
+      class={`w-10 h-6 bg-white flex p-[0.1rem] rounded-full  ${
         uncompleteOnly ? "justify-end bg-lime-500" : "bg-zinc-500"
       }`}
     >
