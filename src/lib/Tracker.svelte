@@ -6,9 +6,33 @@
   export let history = [];
 
   let date = new Date();
+
+  $: maxStreak = getMaxStreak(history);
   $: stats = habitStats(date, history);
   $: monthString = getStringMonth(date);
   $: yearString = getStringYear(date);
+
+  const getMaxStreak = (history) => {
+    let listStreak = [];
+    let streak = 1;
+    let lastDate = null;
+    for (let index = 0; index < history.length; index++) {
+      const h = history[index];
+      if (lastDate) {
+        const fLastDate = new Date(lastDate || "");
+        fLastDate.setDate(fLastDate.getDate() + 1);
+        if (h.completedAt === dateFormatter(fLastDate)) {
+          streak++;
+          lastDate = h.completedAt;
+        } else {
+          listStreak.push(streak);
+          streak = 1;
+        }
+      }
+      lastDate = h.completedAt;
+    }
+    return Math.max(...listStreak, streak);
+  };
 
   const habitStats = (newDate, history) => {
     const days = Array(
@@ -78,6 +102,13 @@
           class="w-4 h-4 inline-block rounded opacity-60 text-sm mx-[0.1rem]"
         />
       {/each}
+      <div
+        class={`${
+          maxStreak > 5 ? "text-amber-500 font-bold" : "opacity-60"
+        } text-sm`}
+      >
+        Max streak: {maxStreak} day
+      </div>
     </div>
     <button
       type="button"
